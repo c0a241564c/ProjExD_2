@@ -6,7 +6,7 @@ import pygame as pg
 
 
 WIDTH, HEIGHT = 1100, 650
-DELTA={ #移動量辞書
+DELTA={  #移動量辞書
     pg.K_UP:(0,-5),
     pg.K_DOWN:(0,+5),
     pg.K_LEFT:(-5,0),
@@ -14,31 +14,32 @@ DELTA={ #移動量辞書
 }
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+
 def check_bound(rct: pg.Rect) -> tuple[bool,bool]:
     """
     引数：こうかとんRectまたはばくだんRect 
     戻り値：タプル（横方向判定結果，縦方向判定結果）
     画面内ならTrue,画面外ならFalse
     """
-    yoko, tate = True, True #初期値:画面の中
+    yoko, tate = True, True  #初期値:画面の中
     if rct.left < 0 or WIDTH < rct.right:
         yoko = False
     if rct.top < 0 or HEIGHT < rct.bottom:
         tate = False
-    return yoko, tate #横方向、縦方向の画面内判定を返す  
+    return yoko, tate  #横方向、縦方向の画面内判定を返す  
 
 
 def gameover(screen: pg.Surface) -> None:
-    cryk_img =pg.transform.rotozoom(pg.image.load("fig/8.png"), 0, 1.0) #泣いてるこうかとん
+    cryk_img =pg.transform.rotozoom(pg.image.load("fig/8.png"), 0, 1.0)  #泣いてるこうかとん
     cryk_rct = cryk_img.get_rect()
     cryk_rct.center = 757, 261
-    cryk_img2 =pg.transform.rotozoom(pg.image.load("fig/8.png"), 0, 1.0) #泣いてるこうかとん2匹目
+    cryk_img2 =pg.transform.rotozoom(pg.image.load("fig/8.png"), 0, 1.0)  #泣いてるこうかとん2匹目
     cryk_rct2 = cryk_img2.get_rect()
     cryk_rct2.center = 357, 261
-    gameover_img = pg.Surface((1100, 650)) #空のsurfaceをつくる
-    pg.draw.rect(gameover_img, (0,0,0), (1100,650,1100,650)) #暗い画面をつくる
+    gameover_img = pg.Surface((1100, 650))  #空のsurfaceをつくる
+    pg.draw.rect(gameover_img, (0,0,0), (1100,650,1100,650))  #暗い画面をつくる
     gameover_img.set_alpha((128))  
-    gameover_rct=gameover_img.get_rect() #暗い画面のRectを取得
+    gameover_rct=gameover_img.get_rect()  #暗い画面のRectを取得
     fonto = pg.font.Font(None, 80)
     txt = fonto.render("GAMEOVER",True, (255, 255, 255))
     screen.blit(gameover_img, gameover_rct)
@@ -56,7 +57,7 @@ def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
     """
     bb_lst = []
     sbb_accs = [a for a in range(1, 11)]
-    for r in range(1, 11): # 1から10までの加速度
+    for r in range(1, 11):  # 1から10までの加速度
         bb_img = pg.Surface((20*r, 20*r))
         pg.draw.circle(bb_img, (255, 0, 0), (10*r, 10*r), 10*r)
         bb_img.set_colorkey((0,0,0))
@@ -64,22 +65,22 @@ def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
     return sbb_accs, bb_lst
 
 
-def load_kk_images() -> dict[tuple[int, int], pg.Surface]: # こうかとんの画像を読み込む
-    img_base = pg.image.load("fig/3.png") # こうかとんの画像を読み込む
-    img_base = pg.transform.rotozoom(img_base, 0, 0.9) # 画像のサイズを縮小する
-    h_imgs = pg.transform.flip(img_base, True, False) # 画像を左右反転する
-    h_imgs2 = pg.transform.flip(img_base, False, True) # 画像を上下反転する
-    h_imgs3 = pg.transform.flip(img_base, True, True) # 画像を上下左右反転する
+def load_kk_images() -> dict[tuple[int, int], pg.Surface]:  # こうかとんの画像を読み込む
+    img_base = pg.image.load("fig/3.png")  # こうかとんの画像を読み込む
+    img_base = pg.transform.rotozoom(img_base, 0, 0.9)  # 画像のサイズを縮小する
+    h_imgs = pg.transform.flip(img_base, True, False)  # 画像を左右反転する
+    h_imgs2 = pg.transform.flip(img_base, False, True)  # 画像を上下反転する
+    h_imgs3 = pg.transform.flip(img_base, True, True)  # 画像を上下左右反転する
     kk_imgs = {
         (0, 0): img_base,  # 静止画像
-        (0, -5): pg.transform.rotozoom(h_imgs2, -90, 0.9), # 上方向
-        (0, 5): pg.transform.rotozoom(h_imgs2, 90, 0.9), # 下方向
-        (-5, 0): pg.transform.rotozoom(h_imgs3, 180, 0.9), # 左方向
-        (5, 0): pg.transform.rotozoom(h_imgs2, -180, 0.9), # 右方向
-        (-5, -5): pg.transform.rotozoom(img_base, -45, 0.9), # 左上方向
-        (-5, 5): pg.transform.rotozoom(img_base, 45, 0.9), # 左下方向
-        (5, -5): pg.transform.rotozoom(h_imgs, 45, 0.9), # 右上方向
-        (5, 5): pg.transform.rotozoom(h_imgs, -45, 0.9), # 右下方向
+        (0, -5): pg.transform.rotozoom(h_imgs2, -90, 0.9),  # 上方向
+        (0, 5): pg.transform.rotozoom(h_imgs2, 90, 0.9),  # 下方向
+        (-5, 0): pg.transform.rotozoom(h_imgs3, 180, 0.9),  # 左方向
+        (5, 0): pg.transform.rotozoom(h_imgs2, -180, 0.9),  # 右方向
+        (-5, -5): pg.transform.rotozoom(img_base, -45, 0.9),  # 左上方向
+        (-5, 5): pg.transform.rotozoom(img_base, 45, 0.9),  # 左下方向
+        (5, -5): pg.transform.rotozoom(h_imgs, 45, 0.9),  # 右上方向
+        (5, 5): pg.transform.rotozoom(h_imgs, -45, 0.9),  # 右下方向
     }
     return kk_imgs
 
@@ -90,6 +91,7 @@ def get_kk_img(sum_mv: tuple[int, int], kk_imgs: dict[tuple[int, int], pg.Surfac
     """
     return kk_imgs.get(tuple(sum_mv), kk_imgs[(0, 0)]) 
 
+
 def calc_orientation(org: pg.Rect, dst: pg.Rect,
 current_xy: tuple[float, float]) -> tuple[float, float]:
     current_xy=[]
@@ -98,7 +100,8 @@ current_xy: tuple[float, float]) -> tuple[float, float]:
     n= (x**2 + y**2)**(1/2)
     x/n*(50**(1/2))
     y/n(50**(1/2))
-    return x/n*(50**(1/2)), y/n*(50**(1/2)) # 50は適当な値
+    return x/n*(50**(1/2)), y/n*(50**(1/2))  # 50は適当な値
+
 
 def main(): 
     pg.display.set_caption("逃げろ！こうかとん")
@@ -108,22 +111,22 @@ def main():
     kk_imgs = load_kk_images()  #画像読み込み
     kk_rct = kk_img.get_rect()
     kk_rct.center = 300, 200
-    bb_img = pg.Surface((20,20)) #空のsurfaceをつくる
-    pg.draw.circle(bb_img,(255,0,0),(10,10),10) #赤い円を描く
+    bb_img = pg.Surface((20,20))  #空のsurfaceをつくる
+    pg.draw.circle(bb_img,(255,0,0),(10,10),10)  #赤い円を描く
     bb_img.set_colorkey((0,0,0))
-    bb_rct=bb_img.get_rect() #爆弾Rectを取得
-    bb_rct.centerx = random.randint(0,WIDTH) #横座標の乱数
-    bb_rct.centery = random.randint(0,HEIGHT) #縦座標の乱数
-    vx,vy=+5,+5 #爆弾の移動速度
+    bb_rct=bb_img.get_rect()  #爆弾Rectを取得
+    bb_rct.centerx = random.randint(0,WIDTH)  #横座標の乱数
+    bb_rct.centery = random.randint(0,HEIGHT)  #縦座標の乱数
+    vx,vy=+5,+5  #爆弾の移動速度
     clock = pg.time.Clock()
     tmr = 0
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: 
                 return
-        if kk_rct.colliderect(bb_rct): #こうかとんRectと爆弾Rectの衝突判定 
+        if kk_rct.colliderect(bb_rct):  #こうかとんRectと爆弾Rectの衝突判定 
             gameover(screen)
-            # display.update()
+           
             return
         bb_accs, bb_imgs = init_bb_imgs()
         bb_img = bb_imgs[min(tmr//500, 9)]   
@@ -145,16 +148,16 @@ def main():
         #     sum_mv[0] += 5
         kk_rct.move_ip(sum_mv)
         if check_bound(kk_rct) != (True,True):
-            kk_rct.move_ip(-sum_mv[0],-sum_mv[1]) #移動をなかったことにする      
+            kk_rct.move_ip(-sum_mv[0],-sum_mv[1])  #移動をなかったことにする      
         kk_img = get_kk_img(tuple(sum_mv), kk_imgs) 
         screen.blit(kk_img, kk_rct)
         avx = vx*bb_accs[min(tmr//500, 9)]
         avy= vy*bb_accs[min(tmr//500, 9)]
-        bb_rct.move_ip(avx,avy) #爆弾の移動
+        bb_rct.move_ip(avx,avy)  #爆弾の移動
         yoko,tate= check_bound(bb_rct)
-        if not yoko: #横方向にはみ出ていたら
+        if not yoko:  #横方向にはみ出ていたら
             vx*=-1
-        if not tate: #縦方向にはみ出ていたら
+        if not tate:  #縦方向にはみ出ていたら
             vy*=-1    
         screen.blit(bb_img, bb_rct)
         
